@@ -1,0 +1,47 @@
+# Python temporary files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and secret keys
+.env
+.env.*
+*.key
+
+# Jupyter Notebook temporary files
+.ipynb_checkpoints/
+
+# Testing and coverage files
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Private or large datasets
+data/raw/
+data/private/
+
+# Trained model checkpoints
+checkpoints/
+artifacts/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Log files
+*.log
+
+# Temporary files
+tmp/
+temp/
