@@ -1,0 +1,8 @@
+# Web application
+streamlit
+
+# Reading-level and text analysis
+textstat
+
+# Automated testing
+pytest
