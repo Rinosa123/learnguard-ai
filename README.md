@@ -5,6 +5,17 @@ questions with automated quality checking.
 
 > **Project status:** Under active development
 
+## Current Implementation
+
+The first working version includes:
+
+- Children's story input
+- Word and sentence counting
+- Flesch Reading Ease calculation
+- Flesch–Kincaid Grade Level estimation
+- Simple readability interpretation
+- Interactive Streamlit interface
+
 ## Overview
 
 LearnGuard AI helps teachers generate reading-comprehension activities
