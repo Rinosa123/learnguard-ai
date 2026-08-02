@@ -13,7 +13,7 @@ env/
 .env.*
 *.key
 
-# Jupyter Notebook temporary files
+# Jupyter temporary files
 .ipynb_checkpoints/
 
 # Testing and coverage files
@@ -31,17 +31,21 @@ Thumbs.db
 data/raw/
 data/private/
 
-# Trained model checkpoints
+# Trained models and checkpoints
+models/
 checkpoints/
-artifacts/
+*.safetensors
+*.bin
 *.pt
 *.pth
 *.ckpt
-*.safetensors
 
-# Log files
+# Generated runtime outputs
+outputs/
+artifacts/
+results/
+
+# Log and temporary files
 *.log
-
-# Temporary files
 tmp/
 temp/
