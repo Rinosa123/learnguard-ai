@@ -1,101 +1,175 @@
 # LearnGuard AI
 
-An AI-powered pipeline for generating reliable reading-comprehension
-questions with automated quality checking.
+An NLP pipeline for generating children's stories and reliable reading-comprehension question–answer pairs, with automated quality control at every stage.
 
-> **Project status:** Under active development
+> **Status:** Working portfolio demo with a validated end-to-end example. GPU inference with the three fine-tuned models is the next integration phase.
 
-## Current Implementation
+## Why this project?
 
-The first working version includes:
+Generative models can create educational content quickly, but their outputs may contain inconsistent stories, unanswerable questions, duplicate questions, or answers that are not supported by the story.
 
-- Children's story input
-- Word and sentence counting
-- Flesch Reading Ease calculation
-- Flesch–Kincaid Grade Level estimation
-- Simple readability interpretation
-- Interactive Streamlit interface
+LearnGuard AI addresses this problem with a multi-stage pipeline that generates content, evaluates it, and rejects unreliable outputs before presenting them to a user.
 
-## Overview
+## Pipeline
 
-LearnGuard AI helps teachers generate reading-comprehension activities
-from children's stories.
+1. **Story generation and quality control** – generate an age-appropriate story and check its structure, topic preservation, length, ending, and character-name consistency.
+2. **Answer-span ranking** – identify candidate answers, remove vague or duplicate spans, and balance selections across the beginning, middle, and ending.
+3. **Question generation** – use an answer-aware fine-tuned T5 model to generate and rank question candidates.
+4. **QA verification** – compare answers from a fine-tuned generative QA model and an independent extractive QA verifier, then apply strict quality gates.
+5. **Human review** – retain a manual approval step for educational safety and narrative quality.
 
-The system is designed to generate questions and answers, evaluate their
-quality, and reject unsuitable outputs before they are shown to the user.
+## Validated example
 
-## Problem
+For the topic **“honesty when a child finds a lost wallet”** and age group **8–10**, the pipeline produced:
 
-Large language models can generate educational content quickly, but the
-generated questions may be:
+| Stage | Result |
+|---|---:|
+| Human-approved story | 247 words |
+| Ranked answer spans | 12 |
+| Question candidates | 17 |
+| Answer spans covered by questions | 6 |
+| Robustly approved candidates | 9 |
+| Final unique strict QA pairs | 5 |
 
-- unanswerable from the supplied story;
-- factually inconsistent;
-- duplicated or unclear;
-- inappropriate for the learner's reading level;
-- based on information not present in the story.
+These figures describe one fully reviewed demonstration run; they are not presented as dataset-wide model-performance estimates.
 
-LearnGuard AI addresses this problem by adding automated validation and
-quality-control stages to the generation pipeline.
+## Portfolio demo
 
-## Planned Workflow
+The Streamlit application provides:
 
-1. Accept a children's story.
-2. Analyse the story and its reading difficulty.
-3. Identify suitable answer spans.
-4. Generate comprehension questions.
-5. Generate or extract expected answers.
-6. Evaluate question answerability and relevance.
-7. Assign a quality score.
-8. Accept, reject, or flag each question for review.
-9. Export the approved questions as a worksheet.
+- topic and age-group inputs;
+- a saved, human-approved end-to-end result;
+- readability statistics and story quality status;
+- five verified question–answer pairs;
+- downloadable JSON output.
 
-## Planned Features
+The local app runs in transparent **demo mode** because the story-generation model is approximately 14.5 GB and requires a suitable GPU environment. Entering a different topic in demo mode does not run the large models locally.
 
-- Story input and document upload
-- Reading-level analysis
-- Answer-span identification
-- Question generation
-- Question-answer validation
-- Duplicate-question detection
-- Quality scoring and gating
-- Teacher review interface
-- Exportable comprehension worksheets
-- Model evaluation dashboard
+## Models
 
-## Technology Stack
+The full experimental pipeline uses three models trained for this project:
 
-- Python
-- PyTorch
-- Hugging Face Transformers
-- Sentence Transformers
-- scikit-learn
-- FastAPI
-- Streamlit or Gradio
-- pytest
-- Docker
-- GitHub Actions
+| Component | Model |
+|---|---|
+| Story generation | Fine-tuned Qwen2.5 |
+| Question generation | Fine-tuned T5-base, answer-aware |
+| Generative question answering | Fine-tuned T5-base |
+| Independent QA verification | `deepset/roberta-base-squad2` |
 
-## Proposed Project Structure
+Model checkpoints are intentionally excluded from Git because they are large. The notebooks use configurable paths to checkpoints stored in Google Drive.
+
+## Repository structure
 
 ```text
 learnguard-ai/
 ├── app/
-├── configs/
-├── data/
-│   └── sample/
+│   └── app.py
 ├── notebooks/
-├── reports/
-│   └── figures/
+│   ├── 01_story_generation_and_quality_control.ipynb
+│   ├── 02_answer_span_ranking.ipynb
+│   ├── 03_question_generation.ipynb
+│   └── 04_qa_verification.ipynb
 ├── src/
-│   ├── data/
-│   ├── evaluation/
-│   ├── models/
-│   └── pipeline/
+│   ├── config.py
+│   ├── pipeline.py
+│   ├── qa_verification.py
+│   ├── question_generation.py
+│   ├── readability.py
+│   ├── span_ranking.py
+│   └── story_quality.py
 ├── tests/
-├── .github/
-│   └── workflows/
+│   └── test_readability.py
 ├── .gitignore
-├── LICENSE
 ├── README.md
 └── requirements.txt
+```
+
+## Run locally
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Rinosa123/learnguard-ai.git
+cd learnguard-ai
+```
+
+### 2. Create and activate a virtual environment
+
+Windows PowerShell:
+
+```powershell
+python -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+.\.venv\Scripts\Activate.ps1
+```
+
+macOS or Linux:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+### 4. Run the portfolio demo
+
+```bash
+python -m streamlit run app/app.py
+```
+
+### 5. Run the tests
+
+```bash
+python -m pytest -q
+```
+
+Current local test result: **9 passed**.
+
+## GPU configuration
+
+The modular code supports configuration through environment variables:
+
+```text
+LEARNGUARD_MODE=gpu
+LEARNGUARD_STORY_MODEL_PATH=<story-model-directory>
+LEARNGUARD_QUESTION_MODEL_PATH=<question-generation-model-directory>
+LEARNGUARD_ANSWER_MODEL_PATH=<question-answering-model-directory>
+```
+
+The GPU model-loading adapter is not yet connected to the Streamlit application. Until that integration is completed, use the notebooks for full model inference and the application for the reproducible portfolio demonstration.
+
+## Technology
+
+- Python
+- PyTorch
+- Hugging Face Transformers
+- Streamlit
+- spaCy
+- textstat
+- pandas
+- pytest
+- Google Colab with NVIDIA GPU
+
+## Current limitations
+
+- Full inference requires GPU resources and locally configured checkpoints.
+- The app currently demonstrates one saved, human-approved pipeline result.
+- Automated quality gates reduce errors but do not replace teacher or expert review.
+- The reported example results should be expanded into a multi-topic evaluation set.
+
+## Next steps
+
+- connect the three fine-tuned models to the modular GPU pipeline;
+- add a small, versioned evaluation dataset and aggregate metrics;
+- add tests for story QC, span ranking, question generation, and QA verification;
+- deploy the lightweight demonstration app;
+- add continuous integration with GitHub Actions.
+
+## Responsible use
+
+LearnGuard AI is a research and portfolio project. Generated educational material should be reviewed by a teacher or qualified adult before use with learners.
