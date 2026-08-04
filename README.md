@@ -96,6 +96,7 @@ LEARNGUARD_MODE=gpu
 LEARNGUARD_STORY_MODEL_PATH=<path-to-story-model>
 LEARNGUARD_QUESTION_MODEL_PATH=<path-to-question-generation-model>
 LEARNGUARD_ANSWER_MODEL_PATH=<path-to-question-answering-model>
+```
 
 #### Example Google Colab configuration
 
