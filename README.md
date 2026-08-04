@@ -83,6 +83,7 @@ Run demo mode with:
 ```powershell
 $env:LEARNGUARD_MODE = "demo"
 python -m streamlit run app/app.py
+```
 
 ### Full GPU mode
 
