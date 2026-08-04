@@ -45,6 +45,18 @@ The Streamlit application provides:
 
 The local app runs in transparent **demo mode** because the story-generation model is approximately 14.5 GB and requires a suitable GPU environment. Entering a different topic in demo mode does not run the large models locally.
 
+### Application overview
+
+![LearnGuard AI application overview](docs/images/learnguard-app-overview.png)
+
+### Generated story and quality-control results
+
+![LearnGuard AI story quality results](docs/images/learnguard-story-quality.png)
+
+### Verified question-answer pairs
+
+![LearnGuard AI verified question-answer pairs](docs/images/learnguard-verified-qa.png)
+
 ## Models
 
 The full experimental pipeline uses three models trained for this project:
