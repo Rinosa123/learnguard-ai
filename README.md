@@ -57,6 +57,82 @@ The local app runs in transparent **demo mode** because the story-generation mod
 
 ![LearnGuard AI verified question-answer pairs](docs/images/learnguard-verified-qa.png)
 
+## Application modes
+
+LearnGuard supports two separate configurations.
+
+| Feature | Demo mode | Full GPU mode |
+| --- | --- | --- |
+| Purpose | Lightweight portfolio demonstration | Complete end-to-end model inference |
+| Story source | Saved, human-approved example | Fine-tuned story-generation model |
+| Question source | Saved, verified QA pairs | Fine-tuned question-generation model |
+| Answer verification | Previously validated results | Generative QA model and extractive verifier |
+| Topic input | Displayed for interface demonstration | Used to generate a new story |
+| Model files required | No | Yes |
+| GPU required | No | Yes |
+| Suitable for this Surface Pro | Yes | No; use Colab or another GPU environment |
+
+### Demo mode
+
+Demo mode allows reviewers to run the Streamlit interface without downloading the large model checkpoints. It displays one saved, human-approved result produced by the complete LearnGuard pipeline.
+
+Changing the topic in demo mode does not generate new content. This limitation is shown clearly in the application.
+
+Run demo mode with:
+
+```powershell
+$env:LEARNGUARD_MODE = "demo"
+python -m streamlit run app/app.py
+
+### Full GPU mode
+
+Full GPU mode is designed to generate a new learning activity from the topic and age group entered by the user. It requires the three fine-tuned model checkpoints and a suitable CUDA GPU environment.
+
+Required environment variables:
+
+```text
+LEARNGUARD_MODE=gpu
+LEARNGUARD_STORY_MODEL_PATH=<path-to-story-model>
+LEARNGUARD_QUESTION_MODEL_PATH=<path-to-question-generation-model>
+LEARNGUARD_ANSWER_MODEL_PATH=<path-to-question-answering-model>
+
+#### Example Google Colab configuration
+
+Mount Google Drive first:
+
+```python
+from google.colab import drive
+
+drive.mount("/content/drive")
+```
+
+Configure LearnGuard AI:
+
+```python
+import os
+
+os.environ["LEARNGUARD_MODE"] = "gpu"
+
+os.environ["LEARNGUARD_STORY_MODEL_PATH"] = (
+    "/content/drive/MyDrive/KidStory-Qwen2.5/final_model_merged"
+)
+
+os.environ["LEARNGUARD_QUESTION_MODEL_PATH"] = (
+    "/content/drive/MyDrive/QA_Fairytale/QG_Phase3/"
+    "t5base_QG_answeraware_e20_bs64_beam8/checkpoint-2000_final"
+)
+
+os.environ["LEARNGUARD_ANSWER_MODEL_PATH"] = (
+    "/content/drive/MyDrive/QA_Fairytale/QA_Genera_New/"
+    "t5base_fairytaleQA_tagged_e20_bs64_beam8/"
+    "checkpoint-1250_polish/checkpoint-400_final"
+)
+```
+
+> **Current implementation status:** Demo mode is fully runnable locally.  
+> The validated model pipeline is documented in the notebooks. Direct full-GPU
+> inference from the Streamlit interface is the next integration milestone.
+
 ## Models
 
 The full experimental pipeline uses three models trained for this project:
